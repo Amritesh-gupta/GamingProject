@@ -1,6 +1,6 @@
 package game;
 
-import cricketPlayers.*;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -225,30 +225,27 @@ public class CricketGame extends OutdoorGames{
         scoreCardOfTeamA = new LinkedHashMap<>();
         scoreCardOfTeamB = new LinkedHashMap<>();
 
-        teamA.addPlayer(new ViratKohli());
-        teamA.addPlayer(new RohitSharma());
-        teamA.addPlayer(new ShubmanGill());
-        teamA.addPlayer(new IshanKishan());
-        teamA.addPlayer(new HardikPandya());
-        teamA.addPlayer(new SuryaKumarYadav());
-        teamA.addPlayer(new KsBharat());
-        teamA.addPlayer(new WashingtonSundar());
-        teamA.addPlayer(new ShahbazAhmed());
-        teamA.addPlayer(new ShardulThakur());
+        String[] indianPlayerNames = {"Virat Kohli","Rohit Sharma", "Shubnam Gill", "Ishan Kishan", "Hardik Pandya","Surya Kumar Yadav","KS Bharat","Washington Sundar","Shahbaz Ahmed","Shardul Thakur","Chahal"};
+        String[] indianPlayersRoles = {"Batsman","Batsman","Batsman","Batsman","Batsman","All rounder","All rounder","All rounder","Bowler","Bowler","Bowler"};
+        String[] pakistanPlayerNames = {"Fakhar Zaman","Shan Masood","Babar Azam","Mohammad Rizwan","Haris Sohail","Salman Ali","Mohammad Nawaz","Usama Mir","Mohammad Wasim","Haris Rauf","Mohammad Hasnain","Haris ali"};
+        String[] pakistanPlayersRoles = {"Batsman","Batsman","Batsman","Batsman","Batsman","All rounder","All rounder","All rounder","Bowler","Bowler","Bowler"};
 
+        for(int i=0;i<11;i++){
+            CricketPlayer cricketPlayer = new CricketPlayer();
+            cricketPlayer.setName(indianPlayerNames[i]);
+            cricketPlayer.setRole(indianPlayersRoles[i]);
+            cricketPlayer.setAge(35); // Just for now
+            teamA.addPlayer(cricketPlayer);
+        }
 
-        teamB.addPlayer(new FakharZaman());
-        teamB.addPlayer(new ShanMasood());
-        teamB.addPlayer(new BabarAzam());
-        teamB.addPlayer(new MohammadRizwan());
-        teamB.addPlayer(new HarisSohail());
-        teamB.addPlayer(new SalmanAli());
-        teamB.addPlayer(new MohammadNawaz());
-        teamB.addPlayer(new UsamaMir());
-        teamB.addPlayer(new MohammadWasim());
-        teamB.addPlayer(new HarisRauf());
-        teamB.addPlayer(new MohammadHasnain());
-
+        for(int i=0;i<11;i++){
+            CricketPlayer cricketPlayer = new CricketPlayer();
+            cricketPlayer.setName(pakistanPlayerNames[i]);
+            cricketPlayer.setRole(pakistanPlayersRoles[i]);
+            cricketPlayer.setAge(35); // Just for now
+            teamB.addPlayer(cricketPlayer);
+        }
+        
         toss();
     }
 
