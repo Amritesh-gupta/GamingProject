@@ -1,0 +1,226 @@
+{
+   "cricketPlayers" : [
+    {
+        "name" : "Virat kohli",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Rohit sharma",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+
+    },
+    {
+        "name" : "Shubman gill",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+
+    },
+    {
+        "name" : "Ishan kishan",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Hardik Pandya",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Surya Kumar Yadav",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "KS Bharat",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Washington Sundar",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Shahbaz Ahmed",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Shardul Thakur",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Chahal",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "India"
+    },
+    {
+        "name" : "Fakhar Zaman",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Shan Masood",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Babar Azam",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Mohammad Rizwan",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Haris Sohail",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Salman Ali",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Mohammad Nawaz",
+        "age" : 30,
+        "role" : "batsman",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Usama Mir",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Mohammad Wasim",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Haris Rauf",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    },
+    {
+        "name" : "Mohammad Hasnain",
+        "age" : 30,
+        "role" : "bowler",
+        "totalRunsScored" : 1000,
+        "numberOfCenturies" : 100,
+        "numberOfMatchesPlayed" : 100,
+        "avgStrikeRate" : 70,
+        "belongsToCountry" : "Pakistan"
+    }
+   ]
+}

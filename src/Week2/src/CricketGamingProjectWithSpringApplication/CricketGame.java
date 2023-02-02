@@ -83,9 +83,9 @@ public class CricketGame extends OutdoorGames {
             scoreCard = scoreCardOfTeamB;
         }
 
-        player1 = team.getCricketPlayers().get(index);
+        player1 = team.getTeam().get(index);
         index++;
-        player2 = team.getCricketPlayers().get(index);
+        player2 = team.getTeam().get(index);
 
         Player playerOnStrike = player1;
         Player playerOnNonStrike = player2;
@@ -158,7 +158,7 @@ public class CricketGame extends OutdoorGames {
                         System.out.println("Total Score" + teamScore + "/" + teamWickets);
                         return;
                     }
-                    playerOnStrike = team.getCricketPlayers().get(index);
+                    playerOnStrike = team.getTeam().get(index);
                     scoreCard.put(playerOnStrike,0);
                     break;
                 case "N":
@@ -262,56 +262,28 @@ public class CricketGame extends OutdoorGames {
 
     @Override
     public void initializeGame() {
-        teamA = new Team();
-        teamB = new Team();
-        Team cricketTeam = new Team();
 
-        File file = new File("/Users/amriteshg/Desktop/Players.json");
+        teamA = new CricketTeam();
+        teamB = new CricketTeam();
+        CricketTeam cricketTeam = null;
+
 
         try{
+            File file = new File("src/Week2/src/CricketGamingProjectWithSpringApplication/Players.json");
             ObjectMapper objectMapper = new ObjectMapper();
-            cricketTeam = objectMapper.readValue(file,Team.class);
+            cricketTeam = objectMapper.readValue(file,CricketTeam.class);
 
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
 
-        ArrayList<CricketPlayer> cricketPlayers = cricketTeam.getCricketPlayers();
+        teamA.makeTeamOf("India",cricketTeam);
+        teamB.makeTeamOf("Pakistan",cricketTeam);
 
-        cricketPlayers.stream().filter(cricketPlayer -> cricketPlayer.getBelongsToCountry().compareTo("India") == 0)
-                                                        .forEach(indianPlayer -> teamA.addPlayer(indianPlayer));
-
-        cricketPlayers.stream().filter(cricketPlayer -> cricketPlayer.getBelongsToCountry().compareTo("Pakistan") == 0)
-                .forEach(pakistanPlayer -> teamB.addPlayer(pakistanPlayer));
-
-
-        teamA.setTeamName("India");
-        teamB.setTeamName("Pakistan");
 
         scoreCardOfTeamA = new LinkedHashMap<>();
         scoreCardOfTeamB = new LinkedHashMap<>();
-
-//        String[] indianPlayerNames = {"Virat Kohli","Rohit Sharma", "Shubnam Gill", "Ishan Kishan", "Hardik Pandya","Surya Kumar Yadav","KS Bharat","Washington Sundar","Shahbaz Ahmed","Shardul Thakur","Chahal"};
-//        String[] indianPlayersRoles = {"Batsman","Batsman","Batsman","Batsman","Batsman","All rounder","All rounder","All rounder","Bowler","Bowler","Bowler"};
-//        String[] pakistanPlayerNames = {"Fakhar Zaman","Shan Masood","Babar Azam","Mohammad Rizwan","Haris Sohail","Salman Ali","Mohammad Nawaz","Usama Mir","Mohammad Wasim","Haris Rauf","Mohammad Hasnain"};
-//        String[] pakistanPlayersRoles = {"Batsman","Batsman","Batsman","Batsman","Batsman","All rounder","All rounder","All rounder","Bowler","Bowler","Bowler"};
-//
-//        for(int i=0;i<11;i++){
-//            CricketPlayer cricketPlayer = new CricketPlayer();
-//            cricketPlayer.setName(indianPlayerNames[i]);
-//            cricketPlayer.setRole(indianPlayersRoles[i]);
-//            cricketPlayer.setAge(35); // Just for now
-//            teamA.addPlayer(cricketPlayer);
-//        }
-//
-//        for(int i=0;i<11;i++){
-//            CricketPlayer cricketPlayer = new CricketPlayer();
-//            cricketPlayer.setName(pakistanPlayerNames[i]);
-//            cricketPlayer.setRole(pakistanPlayersRoles[i]);
-//            cricketPlayer.setAge(35); // Just for now
-//            teamB.addPlayer(cricketPlayer);
-//        }
 
         toss();
     }
@@ -325,38 +297,20 @@ public class CricketGame extends OutdoorGames {
         int res = scanner.nextInt();
 
 
-        int tossRes = new Random().nextInt(2);
+        int tossRes = new Random().nextInt(2) + 1;
 
-        switch (res){
-            case 1:
-                if(tossRes == 0){
-                    System.out.println("It's a Heads, You won the toss");
-                    playingPreference();
-                    play();
-                }
-                else{
-                    System.out.println("Ahhh! Bad luck,you lost");
-                    battingFirstTeam = teamB;
-                    play();
-                }
-                break;
-            case 2:
-                if(tossRes == 1){
-                    System.out.println("It's a Tails, You won the toss");
-                    playingPreference();
-                    play();
-                }
-                else{
-                    System.out.println("Ahhh! Bad luck,you lost");
-                    battingFirstTeam = teamB;
-                    play();
-                }
-                break;
-            default:
-                System.out.println("Choose valid option");
-                toss();
-                break;
+        if(res == tossRes){
+            System.out.println("It's a Heads, You won the toss");
+            playingPreference();
+            play();
         }
+        else{
+            System.out.println("Ahhh! Bad luck,you lost");
+            battingFirstTeam = teamB;
+            play();
+        }
+
+
     }
 
     private void playingPreference() {

@@ -82,7 +82,7 @@ public class CricketGamingProjectWithSpringApplication {
 
 		switch (res){
 			case 1:
-				CricketGame cricketGame = new CricketGame();
+				Games cricketGame = new CricketGame();
 				playGameScreen(cricketGame);
 				break;
 			case 2:
