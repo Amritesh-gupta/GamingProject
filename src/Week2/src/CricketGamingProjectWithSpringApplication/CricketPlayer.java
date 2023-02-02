@@ -31,49 +31,41 @@ public class CricketPlayer extends Player {
             return new Builder();
         }
 
-        @JsonSetter("totalRunsScored")
         public Builder setTotalRunsScored(int totalRunsScored) {
             this.totalRunsScored = totalRunsScored;
             return this;
         }
 
-        @JsonSetter("numberOfCenturies")
         public Builder setNumberOfCenturies(int numberOfCenturies) {
             this.numberOfCenturies = numberOfCenturies;
             return this;
         }
 
-        @JsonSetter("numberOfMatchesPlayed")
         public Builder setNumberOfMatchesPlayed(int numberOfMatchesPlayed) {
             this.numberOfMatchesPlayed = numberOfMatchesPlayed;
             return this;
         }
 
-        @JsonSetter("avgStrikeRate")
         public Builder setAvgStrikeRate(double avgStrikeRate) {
             this.avgStrikeRate = avgStrikeRate;
             return this;
         }
 
-        @JsonSetter("name")
         public Builder setName(String name) {
             this.name = name;
             return this;
         }
 
-        @JsonSetter("age")
         public Builder setAge(int age) {
             this.age = age;
             return this;
         }
 
-        @JsonSetter("role")
         public Builder setRole(String role) {
             this.role = role;
             return this;
         }
 
-        @JsonSetter("belongsToCountry")
         public Builder setBelongsToCountry(String belongsToCountry) {
             this.belongsToCountry = belongsToCountry;
             return this;
