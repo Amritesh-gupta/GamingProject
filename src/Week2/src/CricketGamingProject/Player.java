@@ -1,4 +1,4 @@
-package CricketGamingProjectWithSpringApplication;
+package CricketGamingProject;
 
 public abstract class Player {
     private String name;

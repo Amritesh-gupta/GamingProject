@@ -1,6 +1,4 @@
-package CricketGamingProjectWithSpringApplication;
-
-import com.fasterxml.jackson.annotation.JsonSetter;
+package CricketGamingProject;
 
 public class CricketPlayer extends Player {
 

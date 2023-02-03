@@ -1,6 +1,4 @@
-package CricketGamingProjectWithSpringApplication;
-
-import java.util.ArrayList;
+package CricketGamingProject;
 
 public interface Games {
     public void play();

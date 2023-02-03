@@ -1,4 +1,4 @@
-package CricketGamingProjectWithSpringApplication;
+package CricketGamingProject;
 
 
 
@@ -59,15 +59,65 @@ public class CricketGame extends OutdoorGames {
         return l;
     }
 
+    public HashMap<PossibleOutcomesOfBall,Probability> getProbabilityMapForBatsman(){
+        HashMap<PossibleOutcomesOfBall,Probability> probabilityForBatsman = new HashMap<>();
+        probabilityForBatsman.put(PossibleOutcomesOfBall.DOTBALL,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.ONERUN,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.TWORUNS,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.THREERUNS,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.FOUR,Probability.HIGH);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.FIVERUNS,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.SIX,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.WIDEBALL,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.NOBALL,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.WICKET,Probability.LOW);
+
+        return probabilityForBatsman;
+    }
+
+    public HashMap<PossibleOutcomesOfBall,Probability> getProbabilityMapForBowler(){
+        HashMap<PossibleOutcomesOfBall,Probability> probabilityForBatsman = new HashMap<>();
+        probabilityForBatsman.put(PossibleOutcomesOfBall.DOTBALL,Probability.HIGH);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.ONERUN,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.TWORUNS,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.THREERUNS,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.FOUR,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.FIVERUNS,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.SIX,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.WIDEBALL,Probability.MODERATE);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.NOBALL,Probability.LOW);
+        probabilityForBatsman.put(PossibleOutcomesOfBall.WICKET,Probability.HIGH);
+
+        return probabilityForBatsman;
+    }
+
+    private int[] getProbabilityArray(HashMap<PossibleOutcomesOfBall,Probability> probabilityHashMap){
+        int[] probabilityArray = new int[probabilityHashMap.size()];
+
+        probabilityHashMap.keySet().stream().forEach(key->{
+            probabilityArray[key.getIndex()] = probabilityHashMap.get(key).getValue();
+        });
+        return probabilityArray;
+    }
     private void playSession(Team team, int overs, int sessionNumber) {
-        int totalBalls = overs*6;
+        int totalValidBalls = 0;
+        int totalOvers = overs;
         int index = 0;
         int teamScore = 0, teamWickets = 0;
 
-        String[] possibleOutcomesOfBall = {"0","1","2","3","4","5","6","WB","N","W"};
-        int[] probabilityForBatsman = {2,2,2,2,3,2,3,2,2,1};
-        int[] probabilityForBowler = {3,1,1,1,1,1,1,2,2,3};
 
+        int numberOfOutcomes = PossibleOutcomesOfBall.values().length;
+
+        PossibleOutcomesOfBall[] possibleOutcomesOfBall = new PossibleOutcomesOfBall[numberOfOutcomes];
+
+        Arrays.stream(PossibleOutcomesOfBall.values()).forEach(outcome -> possibleOutcomesOfBall[outcome.getIndex()] = outcome);
+
+
+        HashMap<PossibleOutcomesOfBall,Probability> probabilityMapForBatsman = getProbabilityMapForBatsman();
+        HashMap<PossibleOutcomesOfBall,Probability> probabilityMapForBowler = getProbabilityMapForBowler();
+
+        int[] probabilityForBatsman = getProbabilityArray(probabilityMapForBatsman);
+        int[] probabilityForBowler = getProbabilityArray(probabilityMapForBowler);
 
 
         Player player1;
@@ -95,7 +145,7 @@ public class CricketGame extends OutdoorGames {
 
         System.out.println("*** " + team.getTeamName() + " goes for the batting ***");
 
-        while(totalBalls > 0){
+        while(overs > 0){
 
             int randomIdx = 0;
 
@@ -106,11 +156,12 @@ public class CricketGame extends OutdoorGames {
                 randomIdx = getRandomIndexWithProbability(probabilityForBowler);
             }
 
-            String ballRes = possibleOutcomesOfBall[randomIdx];
+            String ballRes = possibleOutcomesOfBall[randomIdx].getValue();
 
             switch (ballRes){
                 case "0":
                     System.out.println("Ohh! A Dot ball");
+                    totalValidBalls++;
                     break;
                 case "1":
                     System.out.println("Nice drive but only got a single");
@@ -120,11 +171,13 @@ public class CricketGame extends OutdoorGames {
                     playerOnStrike = playerOnNonStrike;
                     playerOnNonStrike = temp;
                     teamScore++;
+                    totalValidBalls++;
                     break;
                 case "2":
                     System.out.println("Nice Shot! can easily take double");
                     scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+2);
                     teamScore += 2;
+                    totalValidBalls++;
                     break;
                 case "3":
                     System.out.println("Shoot! can it make to four, Ohh! great fielding, saves 1 run for team");
@@ -134,20 +187,23 @@ public class CricketGame extends OutdoorGames {
                     playerOnStrike = playerOnNonStrike;
                     playerOnNonStrike = temp;
                     teamScore += 3;
+                    totalValidBalls++;
                     break;
                 case "4":
                     System.out.println("Lovely straight drive, no-one can stop this four");
                     scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+4);
                     teamScore += 4;
+                    totalValidBalls++;
                     break;
                 case "5":
                     System.out.println("Super wide, Also wicket keeper can't stop it, Free 5 runs");
                     teamScore += 5;
-                    continue;
+                    break;
                 case "6":
                     System.out.println("Terrific shot! straight out of the ground");
                     scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+6);
                     teamScore += 6;
+                    totalValidBalls++;
                     break;
                 case "W":
                     System.out.println("Boooowl, what a yorker, manage to displace bails");
@@ -160,20 +216,21 @@ public class CricketGame extends OutdoorGames {
                     }
                     playerOnStrike = team.getTeam().get(index);
                     scoreCard.put(playerOnStrike,0);
+                    totalValidBalls++;
                     break;
                 case "N":
                     System.out.println("What a ball but no ball :)");
                     teamScore++;
-                    continue;
+                    break;
                 case "WB":
                     System.out.println("Nice try to trick player but try again, Wide ball");
                     teamScore++;
-                    continue;
+                    break;
                 default:
                     System.out.println("Ball went to heaven or hell :)");
                     break;
             }
-            totalBalls--;
+
             try{
                 Thread.sleep(2000);
             }
@@ -181,8 +238,9 @@ public class CricketGame extends OutdoorGames {
                 ex.printStackTrace();
             }
 
-            if(totalBalls%6 == 0){
-                System.out.println((overs*6 - totalBalls)/6 + " Over Complete!!!");
+            if(totalValidBalls == 6){
+                overs--;
+                System.out.println((totalOvers - overs) + " Over Complete!!!");
                 try{
                     Thread.sleep(3000);
                 }
@@ -269,7 +327,7 @@ public class CricketGame extends OutdoorGames {
 
 
         try{
-            File file = new File("src/Week2/src/CricketGamingProjectWithSpringApplication/Players.json");
+            File file = new File("src/Week2/src/CricketGamingProject/Players.json");
             ObjectMapper objectMapper = new ObjectMapper();
             cricketTeam = objectMapper.readValue(file,CricketTeam.class);
 

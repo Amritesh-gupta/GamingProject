@@ -1,4 +1,4 @@
-package CricketGamingProjectWithSpringApplication;
+package CricketGamingProject;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 

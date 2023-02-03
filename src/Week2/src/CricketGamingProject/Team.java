@@ -1,4 +1,4 @@
-package CricketGamingProjectWithSpringApplication;
+package CricketGamingProject;
 
 import java.util.ArrayList;
 

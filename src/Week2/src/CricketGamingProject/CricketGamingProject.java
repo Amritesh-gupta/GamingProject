@@ -1,10 +1,10 @@
-package CricketGamingProjectWithSpringApplication;
+package CricketGamingProject;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 
-public class CricketGamingProjectWithSpringApplication {
+public class CricketGamingProject {
 
 	public static void main(String[] args) {
 		welcomeScreen();
