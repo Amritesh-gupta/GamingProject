@@ -19,7 +19,7 @@ public class CricketGame extends OutdoorGames {
 
     @Override
     public void play(Team battingCricketTeam, Team bowlingCricketTeam) {
-        double overs = 30;
+        double overs = 3;
 
         playSession(battingCricketTeam,bowlingCricketTeam,overs,1);
         battingCricketTeam = (battingCricketTeam.equals(teamA)) ? teamB : teamA;
@@ -174,7 +174,6 @@ public class CricketGame extends OutdoorGames {
 
             currentBowlerStat = scoreCardOfBowlingTeam.get(currentBowler);
 
-
             switch (ballRes){
                 case "0":
                     overs += 0.1;
@@ -287,8 +286,16 @@ public class CricketGame extends OutdoorGames {
                     }
                     index++;
 
-                    player1 = (CricketPlayer) battingTeam.getTeam().get(index);
-                    playerOnStrike = player1;
+                    if(playerOnStrike.equals(player1)){
+                        player1 = (CricketPlayer) battingTeam.getTeam().get(index);
+                        playerOnStrike = player1;
+                    }
+                    else{
+                        player2 = (CricketPlayer) battingTeam.getTeam().get(index);
+                        playerOnStrike = player2;
+                    }
+
+
                     onStrikeBatsmanStat = new BatsmanStat(0,0,0,0);
 
                     break;

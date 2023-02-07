@@ -84,15 +84,7 @@ public class CricketPlayer extends Player {
         this.avgStrikeRate = builder.avgStrikeRate;
     }
 
-    @Override
-    public String toString() {
-        return "CricketPlayer{" +
-                "totalRunsScored=" + totalRunsScored +
-                ", numberOfCenturies=" + numberOfCenturies +
-                ", numberOfMatchesPlayed=" + numberOfMatchesPlayed +
-                ", avgStrikeRate=" + avgStrikeRate +
-                '}';
-    }
+
 
     public CricketPlayer(){
 
