@@ -17,13 +17,6 @@ public abstract class Team {
 
     protected ArrayList<? extends Coach> coaches;
 
-    public ArrayList<? extends Player> getPlayers() {
-        return players;
-    }
-
-    public ArrayList<? extends Coach> getCoaches() {
-        return coaches;
-    }
 
     public abstract void makeTeamOf(String teamName, Team team);
 

@@ -8,27 +8,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CricketGame extends OutdoorGames {
-    Team teamA;
-    Team teamB;
-
-    Team battingFirstTeam;
-
-    LinkedHashMap<Player,Integer> scoreCardOfTeamA;
-    LinkedHashMap<Player, Integer> scoreCardOfTeamB;
+    CricketTeam teamA;
+    CricketTeam teamB;
 
     int teamAScore, teamAWickets;
     int teamBScore, teamBWickets;
 
     @Override
-    public void play() {
-        int overs = 1;
-        Team team = battingFirstTeam;
+    public void play(Team battingCricketTeam, Team bowlingCricketTeam) {
+        double overs = 30;
 
-        playSession(team,overs,1);
-        team = (team.equals(teamA)) ? teamB : teamA;
-        playSession(team,overs,2);
+        playSession(battingCricketTeam,bowlingCricketTeam,overs,1);
+        battingCricketTeam = (battingCricketTeam.equals(teamA)) ? teamB : teamA;
+        bowlingCricketTeam = (bowlingCricketTeam.equals(teamA)) ? teamB : teamA;
+        playSession(battingCricketTeam,bowlingCricketTeam ,overs,2);
     }
 
     int getRandomIndexWithProbability(int[] probabilityArr){
@@ -99,11 +95,21 @@ public class CricketGame extends OutdoorGames {
         });
         return probabilityArray;
     }
-    private void playSession(Team team, int overs, int sessionNumber) {
+    private void playSession(Team battingTeam, Team bowlingTeam, double totalOvers, int sessionNumber) {
         int totalValidBalls = 0;
-        int totalOvers = overs;
-        int index = 0;
+        double overs = 0;
+        int index = 0, bowlerIndex = 0;
         int teamScore = 0, teamWickets = 0;
+        boolean maidenOverFlag = true;
+        AtomicInteger totalBowlers = new AtomicInteger();
+
+        bowlingTeam.getTeam().forEach(player ->{
+            if(player.getRole().compareTo("bowler") == 0){
+                totalBowlers.getAndIncrement();
+            }
+        });
+
+        bowlerIndex = 11 - totalBowlers.get();
 
 
         int numberOfOutcomes = PossibleOutcomesOfBall.values().length;
@@ -120,34 +126,38 @@ public class CricketGame extends OutdoorGames {
         int[] probabilityForBowler = getProbabilityArray(probabilityMapForBowler);
 
 
-        Player player1;
-        Player player2;
-        Player temp;
+        CricketPlayer player1;
+        CricketPlayer player2;
 
-        LinkedHashMap<Player,Integer> scoreCard;
+        LinkedHashMap<CricketPlayer,BatsmanStat> scoreCardOfBattingTeam = new LinkedHashMap<>();
+        LinkedHashMap<CricketPlayer, BowlerStat> scoreCardOfBowlingTeam = new LinkedHashMap<>();;
 
-        if(team.equals(teamA)){
-            scoreCard = scoreCardOfTeamA;
-        }
-        else{
-            scoreCard = scoreCardOfTeamB;
-        }
 
-        player1 = team.getTeam().get(index);
+        player1 = (CricketPlayer) battingTeam.getTeam().get(index);
         index++;
-        player2 = team.getTeam().get(index);
+        player2 = (CricketPlayer) battingTeam.getTeam().get(index);
 
-        Player playerOnStrike = player1;
-        Player playerOnNonStrike = player2;
+        CricketPlayer playerOnStrike = player1;
+        CricketPlayer currentBowler = (CricketPlayer) bowlingTeam.getTeam().get(bowlerIndex);
 
-        scoreCard.put(playerOnStrike,0);
-        scoreCard.put(playerOnNonStrike,0);
 
-        System.out.println("*** " + team.getTeamName() + " goes for the batting ***");
+        BatsmanStat onStrikeBatsmanStat = new BatsmanStat(0,0,0,0);
+        BatsmanStat nonStrikeBatsmanStat= new BatsmanStat(0,0,0,0);
+        BowlerStat currentBowlerStat = new BowlerStat(0,0,0,0);
 
-        while(overs > 0){
+
+        scoreCardOfBattingTeam.put(player1,onStrikeBatsmanStat);
+        scoreCardOfBattingTeam.put(player2,nonStrikeBatsmanStat);
+        scoreCardOfBowlingTeam.put(currentBowler,currentBowlerStat);
+
+
+
+        System.out.println("*** " + battingTeam.getTeamName() + " goes for the batting ***\n\n");
+
+        while(overs != totalOvers){
 
             int randomIdx = 0;
+            int currentBallScore = 0;
 
             if(playerOnStrike.getRole().compareTo("batsman") == 0){
                 randomIdx = getRandomIndexWithProbability(probabilityForBatsman);
@@ -156,105 +166,226 @@ public class CricketGame extends OutdoorGames {
                 randomIdx = getRandomIndexWithProbability(probabilityForBowler);
             }
 
+
             String ballRes = possibleOutcomesOfBall[randomIdx].getValue();
+
+            onStrikeBatsmanStat = scoreCardOfBattingTeam.get(playerOnStrike);
+            onStrikeBatsmanStat.setBallsPlayed(onStrikeBatsmanStat.getBallsPlayed()+1);
+
+            currentBowlerStat = scoreCardOfBowlingTeam.get(currentBowler);
+
 
             switch (ballRes){
                 case "0":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Ohh! A Dot ball");
                     totalValidBalls++;
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
                     break;
                 case "1":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Nice drive but only got a single");
-                    scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+1);
-                    //changeStrike(playerOnStrike,playerOnNonStrike);
-                    temp  = playerOnStrike;
-                    playerOnStrike = playerOnNonStrike;
-                    playerOnNonStrike = temp;
+                    onStrikeBatsmanStat.setRuns(onStrikeBatsmanStat.getRuns()+1);
+                    scoreCardOfBattingTeam.put(playerOnStrike,onStrikeBatsmanStat);
+
+                    playerOnStrike = (playerOnStrike.equals(player1)) ? player2 : player1;
+
+                    onStrikeBatsmanStat = scoreCardOfBattingTeam.get(playerOnStrike);
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
+
                     teamScore++;
+                    currentBallScore = 1;
                     totalValidBalls++;
+                    maidenOverFlag = false;
                     break;
                 case "2":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Nice Shot! can easily take double");
-                    scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+2);
+                    onStrikeBatsmanStat.setRuns(onStrikeBatsmanStat.getRuns()+2);
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
+
                     teamScore += 2;
                     totalValidBalls++;
+                    currentBallScore = 2;
+                    maidenOverFlag = false;
                     break;
                 case "3":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Shoot! can it make to four, Ohh! great fielding, saves 1 run for team");
-                    scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+3);
-                    //changeStrike(playerOnStrike,playerOnNonStrike);
-                    temp  = playerOnStrike;
-                    playerOnStrike = playerOnNonStrike;
-                    playerOnNonStrike = temp;
+                    onStrikeBatsmanStat.setRuns(onStrikeBatsmanStat.getRuns()+3);
+                    scoreCardOfBattingTeam.put(playerOnStrike,onStrikeBatsmanStat);
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
+
+                    playerOnStrike = (playerOnStrike.equals(player1)) ? player2 : player1;
+
+                    onStrikeBatsmanStat = scoreCardOfBattingTeam.get(playerOnStrike);
+
                     teamScore += 3;
+                    currentBallScore = 3;
                     totalValidBalls++;
+                    maidenOverFlag = false;
                     break;
                 case "4":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Lovely straight drive, no-one can stop this four");
-                    scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+4);
+                    onStrikeBatsmanStat.setNumberOfFours(onStrikeBatsmanStat.getNumberOfFours()+1);
+                    onStrikeBatsmanStat.setRuns(onStrikeBatsmanStat.getRuns()+4);
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
+
                     teamScore += 4;
+                    currentBallScore = 4;
                     totalValidBalls++;
+                    maidenOverFlag = false;
                     break;
                 case "5":
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Super wide, Also wicket keeper can't stop it, Free 5 runs");
                     teamScore += 5;
+                    currentBallScore = 5;
+                    maidenOverFlag = false;
                     break;
                 case "6":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Terrific shot! straight out of the ground");
-                    scoreCard.put(playerOnStrike, scoreCard.get(playerOnStrike)+6);
+                    onStrikeBatsmanStat.setNumberOfSixes(onStrikeBatsmanStat.getNumberOfSixes()+1);
+                    onStrikeBatsmanStat.setRuns(onStrikeBatsmanStat.getRuns()+6);
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
+
                     teamScore += 6;
+                    currentBallScore = 6;
                     totalValidBalls++;
+                    maidenOverFlag = false;
                     break;
                 case "W":
+                    overs += 0.1;
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Boooowl, what a yorker, manage to displace bails");
-                    index++;
                     teamWickets++;
+                    totalValidBalls++;
+                    currentBowlerStat.setNumberOfWickets(currentBowlerStat.getNumberOfWickets()+1);
+                    currentBowlerStat.setNumberOfOvers(currentBowlerStat.getNumberOfOvers() + 0.1);
+                    scoreCardOfBattingTeam.put(playerOnStrike,onStrikeBatsmanStat);
+
+
                     if(teamWickets == 10){
                         System.out.println("And it was the last wicket, end for this session");
-                        System.out.println("Total Score" + teamScore + "/" + teamWickets);
+                        System.out.println("Total Score  " + teamScore + "/" + teamWickets);
+                        scoreCardOfBattingTeam.put(playerOnStrike,onStrikeBatsmanStat);
+                        scoreCardOfBowlingTeam.put(currentBowler,currentBowlerStat);
+                        System.out.println("*** Scorecard of team " + battingTeam.getTeamName() + " ***");
+                        displayBattingScoreCard(scoreCardOfBattingTeam, teamScore);
+                        displayBowlingScoreCard(scoreCardOfBowlingTeam);
+                        System.out.println("\n\n");
+                        endSession(sessionNumber,battingTeam,teamScore,teamWickets,overs);
                         return;
                     }
-                    playerOnStrike = team.getTeam().get(index);
-                    scoreCard.put(playerOnStrike,0);
-                    totalValidBalls++;
+                    index++;
+
+                    player1 = (CricketPlayer) battingTeam.getTeam().get(index);
+                    playerOnStrike = player1;
+                    onStrikeBatsmanStat = new BatsmanStat(0,0,0,0);
+
                     break;
-                case "N":
+                case "NB":
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("What a ball but no ball :)");
                     teamScore++;
+                    currentBallScore = 1;
+                    maidenOverFlag = false;
                     break;
                 case "WB":
+                    System.out.printf("%.1f  ",overs);
                     System.out.println("Nice try to trick player but try again, Wide ball");
                     teamScore++;
+                    currentBallScore = 1;
+                    maidenOverFlag = false;
                     break;
                 default:
                     System.out.println("Ball went to heaven or hell :)");
                     break;
             }
 
-            try{
-                Thread.sleep(2000);
+            scoreCardOfBattingTeam.put(playerOnStrike,onStrikeBatsmanStat);
+            currentBowlerStat.setRunsCost(currentBowlerStat.getRunsCost()+currentBallScore);
+
+            if(battingTeam.equals(teamA) && sessionNumber == 2){
+                if(teamScore > teamBScore){
+                    System.out.println("*** Scorecard of team " + battingTeam.getTeamName() + " ***");
+                    displayBattingScoreCard(scoreCardOfBattingTeam, teamScore);
+                    displayBowlingScoreCard(scoreCardOfBowlingTeam);
+                    System.out.println("\n\n");
+                    endSession(sessionNumber,battingTeam,teamScore,teamWickets,overs);
+                    return;
+                }
             }
-            catch (InterruptedException ex){
-                ex.printStackTrace();
+            else if(battingTeam.equals(teamB) && sessionNumber == 2){
+                if(teamScore > teamAScore){
+                    System.out.println("*** Scorecard of team " + battingTeam.getTeamName() + " ***");
+                    displayBattingScoreCard(scoreCardOfBattingTeam, teamScore);
+                    displayBowlingScoreCard(scoreCardOfBowlingTeam);
+                    System.out.println("\n\n");
+                    endSession(sessionNumber,battingTeam,teamScore,teamWickets,overs);
+                    return;
+                }
             }
+
 
             if(totalValidBalls == 6){
-                overs--;
-                System.out.println((totalOvers - overs) + " Over Complete!!!");
-                try{
-                    Thread.sleep(3000);
-                }
-                catch (InterruptedException ex){
-                    ex.printStackTrace();
-                }
-            }
-        }
-        System.out.println("What a session it was," + team.getTeamName() +  " manage to make " + teamScore + " At " + teamWickets +" wickets\n");
-        System.out.println("*** Scorecard of team " + team.getTeamName() + " ***");
-        displayScoreCard(scoreCard, teamScore);
-        System.out.println("\n\n");
+                totalValidBalls = 0;
+                bowlerIndex++;
 
-        if(team.equals(teamA)){
+                if(bowlerIndex == 11){
+                    bowlerIndex = 11 - totalBowlers.get();
+                }
+
+                int temp = (int) currentBowlerStat.getNumberOfOvers();
+                int temp2 = (int) overs;
+                currentBowlerStat.setNumberOfOvers(temp + 1.0);
+                overs = temp2 + 1.0;
+
+
+                if(maidenOverFlag){
+                    currentBowlerStat.setNumberOfMaidenOvers(currentBowlerStat.getNumberOfMaidenOvers()+1);
+                }
+
+                maidenOverFlag = true;
+                boolean check = playerOnStrike.equals(player1);
+                playerOnStrike = (playerOnStrike.equals(player1)) ? player2 : player1;
+
+                scoreCardOfBowlingTeam.put(currentBowler,currentBowlerStat);
+                currentBowler = (CricketPlayer) bowlingTeam.getTeam().get(bowlerIndex);
+
+                if(overs != 0 && scoreCardOfBowlingTeam.get(currentBowler) == null){
+                    currentBowlerStat = new BowlerStat(0,0,0,0);
+                    scoreCardOfBowlingTeam.put(currentBowler,currentBowlerStat);
+                }
+
+                System.out.println("\n" + overs + " Over Complete!!!\n");
+
+            }
+
+
+        }
+
+        System.out.println("*** Scorecard of team " + battingTeam.getTeamName() + " ***");
+        displayBattingScoreCard(scoreCardOfBattingTeam, teamScore);
+        displayBowlingScoreCard(scoreCardOfBowlingTeam);
+        System.out.println("\n\n");
+        endSession(sessionNumber,battingTeam,teamScore,teamWickets,overs);
+
+    }
+
+    private void endSession(int sessionNumber, Team battingTeam, int teamScore, int teamWickets, double overs){
+        System.out.print("What a session it was," + battingTeam.getTeamName() +  " manage to make " + teamScore + " At " + teamWickets +" wickets in ");
+        System.out.printf("%.1f overs\n",overs);
+
+        if(battingTeam.equals(teamA)){
             teamAScore = teamScore;
             teamAWickets = teamWickets;
         }
@@ -265,12 +396,6 @@ public class CricketGame extends OutdoorGames {
 
         if(sessionNumber == 1){
             System.out.println("***** Wait for next session to start *****");
-            try{
-                Thread.sleep(10000);
-            }
-            catch (InterruptedException ex){
-                ex.printStackTrace();
-            }
         }
         else{
             System.out.println("***** Match End *****");
@@ -297,19 +422,97 @@ public class CricketGame extends OutdoorGames {
         }
     }
 
-    private void displayScoreCard(LinkedHashMap<Player, Integer> scoreCard, int teamScore) {
+    private void displayBattingScoreCard(LinkedHashMap<CricketPlayer,BatsmanStat> scoreCard, int teamScore) {
 
-        Set<Player> keys = scoreCard.keySet();
+        Set<CricketPlayer> keys = scoreCard.keySet();
         int totalScoreMadeByPlayers =  0, extraRun = 0;
 
+
+        System.out.println('\n');
+        System.out.print("Batsman");
+        printOptimalSpace(30,7);
+        System.out.print("R");
+        printOptimalSpace(5,1);
+        System.out.print("B");
+        printOptimalSpace(5,1);
+        System.out.print("4s");
+        printOptimalSpace(5,2);
+        System.out.print("6s");
+        printOptimalSpace(5,2);
+        System.out.print("SR");
+        printOptimalSpace(5,2);
+        System.out.println();
+        System.out.println();
+
         // printing the elements of LinkedHashMap
-        for (Player player : keys) {
-            System.out.println(player.getName() + " -- "
-                    + scoreCard.get(player));
-            totalScoreMadeByPlayers += scoreCard.get(player);
+        for (CricketPlayer player : keys) {
+            double strikeRate = (scoreCard.get(player).getRuns()/(double)scoreCard.get(player).getBallsPlayed())*100;
+
+            System.out.print(player.getName());
+            printOptimalSpace(30,player.getName().length());
+            System.out.print(scoreCard.get(player).getRuns());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getRuns()).length());
+            System.out.print(scoreCard.get(player).getBallsPlayed());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getBallsPlayed()).length());
+            System.out.print(scoreCard.get(player).getNumberOfFours());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getNumberOfFours()).length());
+            System.out.print(scoreCard.get(player).getNumberOfSixes());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getNumberOfSixes()).length());
+            System.out.printf("%.2f",strikeRate);
+            printOptimalSpace(5,Double.toString(strikeRate).length());
+            totalScoreMadeByPlayers += scoreCard.get(player).getRuns();
+            System.out.println();
         }
 
         System.out.println("Extras -- " + Math.abs(totalScoreMadeByPlayers-teamScore));
+    }
+
+    private void displayBowlingScoreCard(LinkedHashMap<CricketPlayer,BowlerStat> scoreCard) {
+
+        Set<CricketPlayer> keys = scoreCard.keySet();
+
+        System.out.println('\n');
+        System.out.print("Bowler");
+        printOptimalSpace(30,6);
+        System.out.print("O");
+        printOptimalSpace(5,1);
+        System.out.print("R");
+        printOptimalSpace(5,1);
+        System.out.print("M");
+        printOptimalSpace(5,1);
+        System.out.print("W");
+        printOptimalSpace(5,1);
+        System.out.print("ECO");
+        printOptimalSpace(5,3);
+        System.out.println();
+        System.out.println();
+
+        // printing the elements of LinkedHashMap
+        for (CricketPlayer player : keys) {
+            double economy = scoreCard.get(player).getRunsCost() / scoreCard.get(player).getNumberOfOvers();
+
+            System.out.print(player.getName());
+            printOptimalSpace(30,player.getName().length());
+            System.out.printf("%.1f",scoreCard.get(player).getNumberOfOvers());
+            printOptimalSpace(5,3);
+            System.out.print(scoreCard.get(player).getRunsCost());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getRunsCost()).length());
+            System.out.print(scoreCard.get(player).getNumberOfMaidenOvers());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getNumberOfMaidenOvers()).length());
+            System.out.print(scoreCard.get(player).getNumberOfWickets());
+            printOptimalSpace(5,Integer.toString(scoreCard.get(player).getNumberOfWickets()).length());
+            System.out.printf("%.2f",economy);
+            printOptimalSpace(5,Double.toString(economy).length());
+            System.out.println();
+        }
+
+    }
+
+    private void printOptimalSpace(int requireLength, int takenSize){
+
+        for(int i=0;i<requireLength-takenSize;i++){
+            System.out.print(" ");
+        }
     }
 
 
@@ -321,9 +524,9 @@ public class CricketGame extends OutdoorGames {
     @Override
     public void initializeGame() {
 
+        CricketTeam cricketTeam = null;
         teamA = new CricketTeam();
         teamB = new CricketTeam();
-        CricketTeam cricketTeam = null;
 
 
         try{
@@ -338,10 +541,6 @@ public class CricketGame extends OutdoorGames {
 
         teamA.makeTeamOf("India",cricketTeam);
         teamB.makeTeamOf("Pakistan",cricketTeam);
-
-
-        scoreCardOfTeamA = new LinkedHashMap<>();
-        scoreCardOfTeamB = new LinkedHashMap<>();
 
         toss();
     }
@@ -360,12 +559,10 @@ public class CricketGame extends OutdoorGames {
         if(res == tossRes){
             System.out.println("It's a Heads, You won the toss");
             playingPreference();
-            play();
         }
         else{
             System.out.println("Ahhh! Bad luck,you lost");
-            battingFirstTeam = teamB;
-            play();
+            play(teamB,teamA);
         }
 
 
@@ -381,10 +578,10 @@ public class CricketGame extends OutdoorGames {
 
         switch (res){
             case 1:
-                battingFirstTeam = teamA;
+                play(teamA,teamB);
                 break;
             case 2:
-                battingFirstTeam = teamB;
+                play(teamB,teamA);
                 break;
             default:
                 System.out.println("Choose valid option");

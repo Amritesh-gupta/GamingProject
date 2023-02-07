@@ -3,7 +3,7 @@ package CricketGamingProject;
 public abstract class OutdoorGames implements Games{
 
 
-    public abstract void play();
+    public abstract void play(Team teamA, Team teamB);
 
 
     @Override
